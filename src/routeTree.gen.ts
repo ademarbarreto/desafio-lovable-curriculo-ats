@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AnaliseRouteImport } from './routes/analise'
 import { Route as CurriculoRouteImport } from './routes/curriculo'
+import { Route as CurriculoGeradoRouteImport } from './routes/curriculo-gerado'
 import { Route as NovaVagaRouteImport } from './routes/nova-vaga'
 
 const IndexRoute = IndexRouteImport.update({
@@ -29,6 +30,11 @@ const CurriculoRoute = CurriculoRouteImport.update({
   path: '/curriculo',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CurriculoGeradoRoute = CurriculoGeradoRouteImport.update({
+  id: '/curriculo-gerado',
+  path: '/curriculo-gerado',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const NovaVagaRoute = NovaVagaRouteImport.update({
   id: '/nova-vaga',
   path: '/nova-vaga',
@@ -39,12 +45,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/analise': typeof AnaliseRoute
   '/curriculo': typeof CurriculoRoute
+  '/curriculo-gerado': typeof CurriculoGeradoRoute
   '/nova-vaga': typeof NovaVagaRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/analise': typeof AnaliseRoute
   '/curriculo': typeof CurriculoRoute
+  '/curriculo-gerado': typeof CurriculoGeradoRoute
   '/nova-vaga': typeof NovaVagaRoute
 }
 export interface FileRoutesById {
@@ -52,20 +60,29 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/analise': typeof AnaliseRoute
   '/curriculo': typeof CurriculoRoute
+  '/curriculo-gerado': typeof CurriculoGeradoRoute
   '/nova-vaga': typeof NovaVagaRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/analise' | '/curriculo' | '/nova-vaga'
+  fullPaths:
+    '/' | '/analise' | '/curriculo' | '/curriculo-gerado' | '/nova-vaga'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/analise' | '/curriculo' | '/nova-vaga'
-  id: '__root__' | '/' | '/analise' | '/curriculo' | '/nova-vaga'
+  to: '/' | '/analise' | '/curriculo' | '/curriculo-gerado' | '/nova-vaga'
+  id:
+    | '__root__'
+    | '/'
+    | '/analise'
+    | '/curriculo'
+    | '/curriculo-gerado'
+    | '/nova-vaga'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AnaliseRoute: typeof AnaliseRoute
   CurriculoRoute: typeof CurriculoRoute
+  CurriculoGeradoRoute: typeof CurriculoGeradoRoute
   NovaVagaRoute: typeof NovaVagaRoute
 }
 
@@ -92,6 +109,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CurriculoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/curriculo-gerado': {
+      id: '/curriculo-gerado'
+      path: '/curriculo-gerado'
+      fullPath: '/curriculo-gerado'
+      preLoaderRoute: typeof CurriculoGeradoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/nova-vaga': {
       id: '/nova-vaga'
       path: '/nova-vaga'
@@ -106,6 +130,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AnaliseRoute: AnaliseRoute,
   CurriculoRoute: CurriculoRoute,
+  CurriculoGeradoRoute: CurriculoGeradoRoute,
   NovaVagaRoute: NovaVagaRoute,
 }
 export const routeTree = rootRouteImport
