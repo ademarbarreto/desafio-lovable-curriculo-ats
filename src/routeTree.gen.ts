@@ -10,12 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AnaliseRouteImport } from './routes/analise'
 import { Route as CurriculoRouteImport } from './routes/curriculo'
 import { Route as NovaVagaRouteImport } from './routes/nova-vaga'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AnaliseRoute = AnaliseRouteImport.update({
+  id: '/analise',
+  path: '/analise',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CurriculoRoute = CurriculoRouteImport.update({
@@ -31,30 +37,34 @@ const NovaVagaRoute = NovaVagaRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/analise': typeof AnaliseRoute
   '/curriculo': typeof CurriculoRoute
   '/nova-vaga': typeof NovaVagaRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/analise': typeof AnaliseRoute
   '/curriculo': typeof CurriculoRoute
   '/nova-vaga': typeof NovaVagaRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/analise': typeof AnaliseRoute
   '/curriculo': typeof CurriculoRoute
   '/nova-vaga': typeof NovaVagaRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/curriculo' | '/nova-vaga'
+  fullPaths: '/' | '/analise' | '/curriculo' | '/nova-vaga'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/curriculo' | '/nova-vaga'
-  id: '__root__' | '/' | '/curriculo' | '/nova-vaga'
+  to: '/' | '/analise' | '/curriculo' | '/nova-vaga'
+  id: '__root__' | '/' | '/analise' | '/curriculo' | '/nova-vaga'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AnaliseRoute: typeof AnaliseRoute
   CurriculoRoute: typeof CurriculoRoute
   NovaVagaRoute: typeof NovaVagaRoute
 }
@@ -66,6 +76,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/analise': {
+      id: '/analise'
+      path: '/analise'
+      fullPath: '/analise'
+      preLoaderRoute: typeof AnaliseRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/curriculo': {
@@ -87,6 +104,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AnaliseRoute: AnaliseRoute,
   CurriculoRoute: CurriculoRoute,
   NovaVagaRoute: NovaVagaRoute,
 }
