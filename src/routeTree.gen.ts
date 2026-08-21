@@ -10,33 +10,102 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AnaliseRouteImport } from './routes/analise'
+import { Route as CurriculoRouteImport } from './routes/curriculo'
+import { Route as CurriculoGeradoRouteImport } from './routes/curriculo-gerado'
+import { Route as HistoricoRouteImport } from './routes/historico'
+import { Route as NovaVagaRouteImport } from './routes/nova-vaga'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AnaliseRoute = AnaliseRouteImport.update({
+  id: '/analise',
+  path: '/analise',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CurriculoRoute = CurriculoRouteImport.update({
+  id: '/curriculo',
+  path: '/curriculo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CurriculoGeradoRoute = CurriculoGeradoRouteImport.update({
+  id: '/curriculo-gerado',
+  path: '/curriculo-gerado',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HistoricoRoute = HistoricoRouteImport.update({
+  id: '/historico',
+  path: '/historico',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NovaVagaRoute = NovaVagaRouteImport.update({
+  id: '/nova-vaga',
+  path: '/nova-vaga',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/analise': typeof AnaliseRoute
+  '/curriculo': typeof CurriculoRoute
+  '/curriculo-gerado': typeof CurriculoGeradoRoute
+  '/historico': typeof HistoricoRoute
+  '/nova-vaga': typeof NovaVagaRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/analise': typeof AnaliseRoute
+  '/curriculo': typeof CurriculoRoute
+  '/curriculo-gerado': typeof CurriculoGeradoRoute
+  '/historico': typeof HistoricoRoute
+  '/nova-vaga': typeof NovaVagaRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/analise': typeof AnaliseRoute
+  '/curriculo': typeof CurriculoRoute
+  '/curriculo-gerado': typeof CurriculoGeradoRoute
+  '/historico': typeof HistoricoRoute
+  '/nova-vaga': typeof NovaVagaRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/analise'
+    | '/curriculo'
+    | '/curriculo-gerado'
+    | '/historico'
+    | '/nova-vaga'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/analise'
+    | '/curriculo'
+    | '/curriculo-gerado'
+    | '/historico'
+    | '/nova-vaga'
+  id:
+    | '__root__'
+    | '/'
+    | '/analise'
+    | '/curriculo'
+    | '/curriculo-gerado'
+    | '/historico'
+    | '/nova-vaga'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AnaliseRoute: typeof AnaliseRoute
+  CurriculoRoute: typeof CurriculoRoute
+  CurriculoGeradoRoute: typeof CurriculoGeradoRoute
+  HistoricoRoute: typeof HistoricoRoute
+  NovaVagaRoute: typeof NovaVagaRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +117,51 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/analise': {
+      id: '/analise'
+      path: '/analise'
+      fullPath: '/analise'
+      preLoaderRoute: typeof AnaliseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/curriculo': {
+      id: '/curriculo'
+      path: '/curriculo'
+      fullPath: '/curriculo'
+      preLoaderRoute: typeof CurriculoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/curriculo-gerado': {
+      id: '/curriculo-gerado'
+      path: '/curriculo-gerado'
+      fullPath: '/curriculo-gerado'
+      preLoaderRoute: typeof CurriculoGeradoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/historico': {
+      id: '/historico'
+      path: '/historico'
+      fullPath: '/historico'
+      preLoaderRoute: typeof HistoricoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/nova-vaga': {
+      id: '/nova-vaga'
+      path: '/nova-vaga'
+      fullPath: '/nova-vaga'
+      preLoaderRoute: typeof NovaVagaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AnaliseRoute: AnaliseRoute,
+  CurriculoRoute: CurriculoRoute,
+  CurriculoGeradoRoute: CurriculoGeradoRoute,
+  HistoricoRoute: HistoricoRoute,
+  NovaVagaRoute: NovaVagaRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
