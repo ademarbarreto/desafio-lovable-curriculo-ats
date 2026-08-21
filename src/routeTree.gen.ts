@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CurriculoRouteImport } from './routes/curriculo'
+import { Route as NovaVagaRouteImport } from './routes/nova-vaga'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -22,31 +23,40 @@ const CurriculoRoute = CurriculoRouteImport.update({
   path: '/curriculo',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NovaVagaRoute = NovaVagaRouteImport.update({
+  id: '/nova-vaga',
+  path: '/nova-vaga',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/curriculo': typeof CurriculoRoute
+  '/nova-vaga': typeof NovaVagaRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/curriculo': typeof CurriculoRoute
+  '/nova-vaga': typeof NovaVagaRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/curriculo': typeof CurriculoRoute
+  '/nova-vaga': typeof NovaVagaRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/curriculo'
+  fullPaths: '/' | '/curriculo' | '/nova-vaga'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/curriculo'
-  id: '__root__' | '/' | '/curriculo'
+  to: '/' | '/curriculo' | '/nova-vaga'
+  id: '__root__' | '/' | '/curriculo' | '/nova-vaga'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CurriculoRoute: typeof CurriculoRoute
+  NovaVagaRoute: typeof NovaVagaRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +75,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CurriculoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/nova-vaga': {
+      id: '/nova-vaga'
+      path: '/nova-vaga'
+      fullPath: '/nova-vaga'
+      preLoaderRoute: typeof NovaVagaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CurriculoRoute: CurriculoRoute,
+  NovaVagaRoute: NovaVagaRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
