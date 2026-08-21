@@ -42,7 +42,7 @@ export function StatusPill({ status }: { status: string }) {
     <span
       className={cn(
         "inline-flex rounded-sm border px-2 py-0.5 font-mono text-[11px] uppercase tracking-wider",
-        map[status] ?? map.rascunho,
+        map[status] ?? map["rascunho"],
       )}
     >
       {status}
