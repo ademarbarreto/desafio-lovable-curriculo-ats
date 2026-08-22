@@ -14,7 +14,272 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      certifications: {
+        Row: {
+          created_at: string
+          data_emissao: string
+          data_validade: string
+          emissor: string
+          id: string
+          nome: string
+          ordem: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          data_emissao?: string
+          data_validade?: string
+          emissor?: string
+          id?: string
+          nome?: string
+          ordem?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          data_emissao?: string
+          data_validade?: string
+          emissor?: string
+          id?: string
+          nome?: string
+          ordem?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      education: {
+        Row: {
+          created_at: string
+          curso: string
+          data_fim: string
+          data_inicio: string
+          id: string
+          instituicao: string
+          ordem: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          curso?: string
+          data_fim?: string
+          data_inicio?: string
+          id?: string
+          instituicao?: string
+          ordem?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          curso?: string
+          data_fim?: string
+          data_inicio?: string
+          id?: string
+          instituicao?: string
+          ordem?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      experiences: {
+        Row: {
+          cargo: string
+          created_at: string
+          data_fim: string
+          data_inicio: string
+          descricao: string
+          empresa: string
+          id: string
+          ordem: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cargo?: string
+          created_at?: string
+          data_fim?: string
+          data_inicio?: string
+          descricao?: string
+          empresa?: string
+          id?: string
+          ordem?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          cargo?: string
+          created_at?: string
+          data_fim?: string
+          data_inicio?: string
+          descricao?: string
+          empresa?: string
+          id?: string
+          ordem?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      job_postings: {
+        Row: {
+          cargo: string
+          created_at: string
+          descricao: string
+          empresa: string
+          id: string
+          idioma: Database["public"]["Enums"]["vaga_idioma"]
+          status: Database["public"]["Enums"]["candidatura_status"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cargo?: string
+          created_at?: string
+          descricao?: string
+          empresa?: string
+          id?: string
+          idioma?: Database["public"]["Enums"]["vaga_idioma"]
+          status?: Database["public"]["Enums"]["candidatura_status"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          cargo?: string
+          created_at?: string
+          descricao?: string
+          empresa?: string
+          id?: string
+          idioma?: Database["public"]["Enums"]["vaga_idioma"]
+          status?: Database["public"]["Enums"]["candidatura_status"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      matches: {
+        Row: {
+          created_at: string
+          habilidades_compativeis: string[]
+          id: string
+          job_posting_id: string
+          lacunas_reais: string[]
+          observacoes: string[]
+          pontuacao: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          habilidades_compativeis?: string[]
+          id?: string
+          job_posting_id: string
+          lacunas_reais?: string[]
+          observacoes?: string[]
+          pontuacao?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          habilidades_compativeis?: string[]
+          id?: string
+          job_posting_id?: string
+          lacunas_reais?: string[]
+          observacoes?: string[]
+          pontuacao?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "matches_job_posting_id_fkey"
+            columns: ["job_posting_id"]
+            isOneToOne: false
+            referencedRelation: "job_postings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          email: string
+          github_url: string
+          id: string
+          linkedin_url: string
+          localizacao: string
+          nome_completo: string
+          portfolio_url: string
+          resumo: string
+          telefone: string
+          titulo_profissional: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string
+          github_url?: string
+          id: string
+          linkedin_url?: string
+          localizacao?: string
+          nome_completo?: string
+          portfolio_url?: string
+          resumo?: string
+          telefone?: string
+          titulo_profissional?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          github_url?: string
+          id?: string
+          linkedin_url?: string
+          localizacao?: string
+          nome_completo?: string
+          portfolio_url?: string
+          resumo?: string
+          telefone?: string
+          titulo_profissional?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      skills: {
+        Row: {
+          categoria: Database["public"]["Enums"]["skill_categoria"]
+          created_at: string
+          id: string
+          nome: string
+          ordem: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          categoria?: Database["public"]["Enums"]["skill_categoria"]
+          created_at?: string
+          id?: string
+          nome?: string
+          ordem?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          categoria?: Database["public"]["Enums"]["skill_categoria"]
+          created_at?: string
+          id?: string
+          nome?: string
+          ordem?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +288,14 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      candidatura_status:
+        | "rascunho"
+        | "aplicado"
+        | "entrevista"
+        | "rejeitado"
+        | "aceito"
+      skill_categoria: "técnica" | "ferramenta" | "soft skill"
+      vaga_idioma: "pt" | "en"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +422,16 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      candidatura_status: [
+        "rascunho",
+        "aplicado",
+        "entrevista",
+        "rejeitado",
+        "aceito",
+      ],
+      skill_categoria: ["técnica", "ferramenta", "soft skill"],
+      vaga_idioma: ["pt", "en"],
+    },
   },
 } as const
