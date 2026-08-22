@@ -11,7 +11,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { ShieldCheck, Plus } from "lucide-react";
 import { perfil, experiencias, formacoes, certificacoes, habilidades } from "@/lib/mock-data";
 
-export const Route = createFileRoute("/curriculo")({
+export const Route = createFileRoute("/_authenticated/curriculo")({
   head: () => ({
     meta: [
       { title: "Meu Currículo — Currículo Certeiro" },

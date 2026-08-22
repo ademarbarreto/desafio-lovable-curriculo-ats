@@ -14,7 +14,7 @@ import {
   perfil,
 } from "@/lib/mock-data";
 
-export const Route = createFileRoute("/curriculo-gerado")({
+export const Route = createFileRoute("/_authenticated/curriculo-gerado")({
   head: () => ({
     meta: [
       { title: "Currículo Gerado — Currículo Certeiro" },

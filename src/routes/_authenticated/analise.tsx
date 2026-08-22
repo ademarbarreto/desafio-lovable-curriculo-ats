@@ -7,7 +7,7 @@ import { Pontuacao, TechTag } from "@/components/tech-tag";
 import { analiseExemplo } from "@/lib/mock-data";
 import { FileCheck2 } from "lucide-react";
 
-export const Route = createFileRoute("/analise")({
+export const Route = createFileRoute("/_authenticated/analise")({
   head: () => ({
     meta: [
       { title: "Análise de Compatibilidade — Currículo Certeiro" },

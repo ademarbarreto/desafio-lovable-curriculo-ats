@@ -9,73 +9,64 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as AnaliseRouteImport } from './routes/analise'
-import { Route as CurriculoRouteImport } from './routes/curriculo'
-import { Route as CurriculoGeradoRouteImport } from './routes/curriculo-gerado'
-import { Route as HistoricoRouteImport } from './routes/historico'
-import { Route as NovaVagaRouteImport } from './routes/nova-vaga'
+import { Route as AuthenticatedAnaliseRouteImport } from './routes/_authenticated/analise'
+import { Route as AuthenticatedCurriculoRouteImport } from './routes/_authenticated/curriculo'
+import { Route as AuthenticatedCurriculoGeradoRouteImport } from './routes/_authenticated/curriculo-gerado'
+import { Route as AuthenticatedHistoricoRouteImport } from './routes/_authenticated/historico'
+import { Route as AuthenticatedNovaVagaRouteImport } from './routes/_authenticated/nova-vaga'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AnaliseRoute = AnaliseRouteImport.update({
-  id: '/analise',
+const AuthenticatedAnaliseRoute = AuthenticatedAnaliseRouteImport.update({
+  id: '/_authenticated/analise',
   path: '/analise',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CurriculoRoute = CurriculoRouteImport.update({
-  id: '/curriculo',
+const AuthenticatedCurriculoRoute = AuthenticatedCurriculoRouteImport.update({
+  id: '/_authenticated/curriculo',
   path: '/curriculo',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CurriculoGeradoRoute = CurriculoGeradoRouteImport.update({
-  id: '/curriculo-gerado',
-  path: '/curriculo-gerado',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const HistoricoRoute = HistoricoRouteImport.update({
-  id: '/historico',
+const AuthenticatedCurriculoGeradoRoute =
+  AuthenticatedCurriculoGeradoRouteImport.update({
+    id: '/_authenticated/curriculo-gerado',
+    path: '/curriculo-gerado',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AuthenticatedHistoricoRoute = AuthenticatedHistoricoRouteImport.update({
+  id: '/_authenticated/historico',
   path: '/historico',
   getParentRoute: () => rootRouteImport,
 } as any)
-const NovaVagaRoute = NovaVagaRouteImport.update({
-  id: '/nova-vaga',
+const AuthenticatedNovaVagaRoute = AuthenticatedNovaVagaRouteImport.update({
+  id: '/_authenticated/nova-vaga',
   path: '/nova-vaga',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/analise': typeof AnaliseRoute
-  '/curriculo': typeof CurriculoRoute
-  '/curriculo-gerado': typeof CurriculoGeradoRoute
-  '/historico': typeof HistoricoRoute
-  '/nova-vaga': typeof NovaVagaRoute
+  '/analise': typeof AuthenticatedAnaliseRoute
+  '/curriculo': typeof AuthenticatedCurriculoRoute
+  '/curriculo-gerado': typeof AuthenticatedCurriculoGeradoRoute
+  '/historico': typeof AuthenticatedHistoricoRoute
+  '/nova-vaga': typeof AuthenticatedNovaVagaRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/analise': typeof AnaliseRoute
-  '/curriculo': typeof CurriculoRoute
-  '/curriculo-gerado': typeof CurriculoGeradoRoute
-  '/historico': typeof HistoricoRoute
-  '/nova-vaga': typeof NovaVagaRoute
+  '/analise': typeof AuthenticatedAnaliseRoute
+  '/curriculo': typeof AuthenticatedCurriculoRoute
+  '/curriculo-gerado': typeof AuthenticatedCurriculoGeradoRoute
+  '/historico': typeof AuthenticatedHistoricoRoute
+  '/nova-vaga': typeof AuthenticatedNovaVagaRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/analise': typeof AnaliseRoute
-  '/curriculo': typeof CurriculoRoute
-  '/curriculo-gerado': typeof CurriculoGeradoRoute
-  '/historico': typeof HistoricoRoute
-  '/nova-vaga': typeof NovaVagaRoute
+  '/_authenticated/analise': typeof AuthenticatedAnaliseRoute
+  '/_authenticated/curriculo': typeof AuthenticatedCurriculoRoute
+  '/_authenticated/curriculo-gerado': typeof AuthenticatedCurriculoGeradoRoute
+  '/_authenticated/historico': typeof AuthenticatedHistoricoRoute
+  '/_authenticated/nova-vaga': typeof AuthenticatedNovaVagaRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
     | '/analise'
     | '/curriculo'
     | '/curriculo-gerado'
@@ -83,7 +74,6 @@ export interface FileRouteTypes {
     | '/nova-vaga'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/'
     | '/analise'
     | '/curriculo'
     | '/curriculo-gerado'
@@ -91,77 +81,67 @@ export interface FileRouteTypes {
     | '/nova-vaga'
   id:
     | '__root__'
-    | '/'
-    | '/analise'
-    | '/curriculo'
-    | '/curriculo-gerado'
-    | '/historico'
-    | '/nova-vaga'
+    | '/_authenticated/analise'
+    | '/_authenticated/curriculo'
+    | '/_authenticated/curriculo-gerado'
+    | '/_authenticated/historico'
+    | '/_authenticated/nova-vaga'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  AnaliseRoute: typeof AnaliseRoute
-  CurriculoRoute: typeof CurriculoRoute
-  CurriculoGeradoRoute: typeof CurriculoGeradoRoute
-  HistoricoRoute: typeof HistoricoRoute
-  NovaVagaRoute: typeof NovaVagaRoute
+  AuthenticatedAnaliseRoute: typeof AuthenticatedAnaliseRoute
+  AuthenticatedCurriculoRoute: typeof AuthenticatedCurriculoRoute
+  AuthenticatedCurriculoGeradoRoute: typeof AuthenticatedCurriculoGeradoRoute
+  AuthenticatedHistoricoRoute: typeof AuthenticatedHistoricoRoute
+  AuthenticatedNovaVagaRoute: typeof AuthenticatedNovaVagaRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/analise': {
-      id: '/analise'
+    '/_authenticated/analise': {
+      id: '/_authenticated/analise'
       path: '/analise'
       fullPath: '/analise'
-      preLoaderRoute: typeof AnaliseRouteImport
+      preLoaderRoute: typeof AuthenticatedAnaliseRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/curriculo': {
-      id: '/curriculo'
+    '/_authenticated/curriculo': {
+      id: '/_authenticated/curriculo'
       path: '/curriculo'
       fullPath: '/curriculo'
-      preLoaderRoute: typeof CurriculoRouteImport
+      preLoaderRoute: typeof AuthenticatedCurriculoRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/curriculo-gerado': {
-      id: '/curriculo-gerado'
+    '/_authenticated/curriculo-gerado': {
+      id: '/_authenticated/curriculo-gerado'
       path: '/curriculo-gerado'
       fullPath: '/curriculo-gerado'
-      preLoaderRoute: typeof CurriculoGeradoRouteImport
+      preLoaderRoute: typeof AuthenticatedCurriculoGeradoRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/historico': {
-      id: '/historico'
+    '/_authenticated/historico': {
+      id: '/_authenticated/historico'
       path: '/historico'
       fullPath: '/historico'
-      preLoaderRoute: typeof HistoricoRouteImport
+      preLoaderRoute: typeof AuthenticatedHistoricoRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/nova-vaga': {
-      id: '/nova-vaga'
+    '/_authenticated/nova-vaga': {
+      id: '/_authenticated/nova-vaga'
       path: '/nova-vaga'
       fullPath: '/nova-vaga'
-      preLoaderRoute: typeof NovaVagaRouteImport
+      preLoaderRoute: typeof AuthenticatedNovaVagaRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  AnaliseRoute: AnaliseRoute,
-  CurriculoRoute: CurriculoRoute,
-  CurriculoGeradoRoute: CurriculoGeradoRoute,
-  HistoricoRoute: HistoricoRoute,
-  NovaVagaRoute: NovaVagaRoute,
+  AuthenticatedAnaliseRoute: AuthenticatedAnaliseRoute,
+  AuthenticatedCurriculoRoute: AuthenticatedCurriculoRoute,
+  AuthenticatedCurriculoGeradoRoute: AuthenticatedCurriculoGeradoRoute,
+  AuthenticatedHistoricoRoute: AuthenticatedHistoricoRoute,
+  AuthenticatedNovaVagaRoute: AuthenticatedNovaVagaRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

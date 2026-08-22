@@ -9,7 +9,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ScanLine } from "lucide-react";
 import { useState } from "react";
 
-export const Route = createFileRoute("/nova-vaga")({
+export const Route = createFileRoute("/_authenticated/nova-vaga")({
   head: () => ({
     meta: [
       { title: "Nova Vaga — Currículo Certeiro" },

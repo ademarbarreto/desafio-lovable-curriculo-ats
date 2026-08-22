@@ -16,7 +16,7 @@ import { Pontuacao } from "@/components/tech-tag";
 import { candidaturas as iniciais, STATUS_LABEL, type StatusCandidatura } from "@/lib/mock-data";
 import { FilePlus2 } from "lucide-react";
 
-export const Route = createFileRoute("/historico")({
+export const Route = createFileRoute("/_authenticated/historico")({
   head: () => ({
     meta: [
       { title: "Histórico — Currículo Certeiro" },
