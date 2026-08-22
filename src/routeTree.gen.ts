@@ -9,40 +9,46 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthenticatedAnaliseRouteImport } from './routes/_authenticated/analise'
 import { Route as AuthenticatedCurriculoRouteImport } from './routes/_authenticated/curriculo'
 import { Route as AuthenticatedCurriculoGeradoRouteImport } from './routes/_authenticated/curriculo-gerado'
 import { Route as AuthenticatedHistoricoRouteImport } from './routes/_authenticated/historico'
 import { Route as AuthenticatedNovaVagaRouteImport } from './routes/_authenticated/nova-vaga'
 
-const AuthenticatedAnaliseRoute = AuthenticatedAnaliseRouteImport.update({
-  id: '/_authenticated/analise',
-  path: '/analise',
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAnaliseRoute = AuthenticatedAnaliseRouteImport.update({
+  id: '/analise',
+  path: '/analise',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedCurriculoRoute = AuthenticatedCurriculoRouteImport.update({
-  id: '/_authenticated/curriculo',
+  id: '/curriculo',
   path: '/curriculo',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedCurriculoGeradoRoute =
   AuthenticatedCurriculoGeradoRouteImport.update({
-    id: '/_authenticated/curriculo-gerado',
+    id: '/curriculo-gerado',
     path: '/curriculo-gerado',
-    getParentRoute: () => rootRouteImport,
+    getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedHistoricoRoute = AuthenticatedHistoricoRouteImport.update({
-  id: '/_authenticated/historico',
+  id: '/historico',
   path: '/historico',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedNovaVagaRoute = AuthenticatedNovaVagaRouteImport.update({
-  id: '/_authenticated/nova-vaga',
+  id: '/nova-vaga',
   path: '/nova-vaga',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
+  '/': typeof AuthenticatedRouteRouteWithChildren
   '/analise': typeof AuthenticatedAnaliseRoute
   '/curriculo': typeof AuthenticatedCurriculoRoute
   '/curriculo-gerado': typeof AuthenticatedCurriculoGeradoRoute
@@ -50,6 +56,7 @@ export interface FileRoutesByFullPath {
   '/nova-vaga': typeof AuthenticatedNovaVagaRoute
 }
 export interface FileRoutesByTo {
+  '/': typeof AuthenticatedRouteRouteWithChildren
   '/analise': typeof AuthenticatedAnaliseRoute
   '/curriculo': typeof AuthenticatedCurriculoRoute
   '/curriculo-gerado': typeof AuthenticatedCurriculoGeradoRoute
@@ -58,6 +65,7 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/_authenticated/analise': typeof AuthenticatedAnaliseRoute
   '/_authenticated/curriculo': typeof AuthenticatedCurriculoRoute
   '/_authenticated/curriculo-gerado': typeof AuthenticatedCurriculoGeradoRoute
@@ -67,6 +75,7 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/'
     | '/analise'
     | '/curriculo'
     | '/curriculo-gerado'
@@ -74,6 +83,7 @@ export interface FileRouteTypes {
     | '/nova-vaga'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/'
     | '/analise'
     | '/curriculo'
     | '/curriculo-gerado'
@@ -81,6 +91,7 @@ export interface FileRouteTypes {
     | '/nova-vaga'
   id:
     | '__root__'
+    | '/_authenticated'
     | '/_authenticated/analise'
     | '/_authenticated/curriculo'
     | '/_authenticated/curriculo-gerado'
@@ -89,6 +100,57 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+}
+
+declare module '@tanstack/react-router' {
+  interface FileRoutesByPath {
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/analise': {
+      id: '/_authenticated/analise'
+      path: '/analise'
+      fullPath: '/analise'
+      preLoaderRoute: typeof AuthenticatedAnaliseRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/curriculo': {
+      id: '/_authenticated/curriculo'
+      path: '/curriculo'
+      fullPath: '/curriculo'
+      preLoaderRoute: typeof AuthenticatedCurriculoRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/curriculo-gerado': {
+      id: '/_authenticated/curriculo-gerado'
+      path: '/curriculo-gerado'
+      fullPath: '/curriculo-gerado'
+      preLoaderRoute: typeof AuthenticatedCurriculoGeradoRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/historico': {
+      id: '/_authenticated/historico'
+      path: '/historico'
+      fullPath: '/historico'
+      preLoaderRoute: typeof AuthenticatedHistoricoRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/nova-vaga': {
+      id: '/_authenticated/nova-vaga'
+      path: '/nova-vaga'
+      fullPath: '/nova-vaga'
+      preLoaderRoute: typeof AuthenticatedNovaVagaRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+  }
+}
+
+interface AuthenticatedRouteRouteChildren {
   AuthenticatedAnaliseRoute: typeof AuthenticatedAnaliseRoute
   AuthenticatedCurriculoRoute: typeof AuthenticatedCurriculoRoute
   AuthenticatedCurriculoGeradoRoute: typeof AuthenticatedCurriculoGeradoRoute
@@ -96,52 +158,19 @@ export interface RootRouteChildren {
   AuthenticatedNovaVagaRoute: typeof AuthenticatedNovaVagaRoute
 }
 
-declare module '@tanstack/react-router' {
-  interface FileRoutesByPath {
-    '/_authenticated/analise': {
-      id: '/_authenticated/analise'
-      path: '/analise'
-      fullPath: '/analise'
-      preLoaderRoute: typeof AuthenticatedAnaliseRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/curriculo': {
-      id: '/_authenticated/curriculo'
-      path: '/curriculo'
-      fullPath: '/curriculo'
-      preLoaderRoute: typeof AuthenticatedCurriculoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/curriculo-gerado': {
-      id: '/_authenticated/curriculo-gerado'
-      path: '/curriculo-gerado'
-      fullPath: '/curriculo-gerado'
-      preLoaderRoute: typeof AuthenticatedCurriculoGeradoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/historico': {
-      id: '/_authenticated/historico'
-      path: '/historico'
-      fullPath: '/historico'
-      preLoaderRoute: typeof AuthenticatedHistoricoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/nova-vaga': {
-      id: '/_authenticated/nova-vaga'
-      path: '/nova-vaga'
-      fullPath: '/nova-vaga'
-      preLoaderRoute: typeof AuthenticatedNovaVagaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-  }
-}
-
-const rootRouteChildren: RootRouteChildren = {
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAnaliseRoute: AuthenticatedAnaliseRoute,
   AuthenticatedCurriculoRoute: AuthenticatedCurriculoRoute,
   AuthenticatedCurriculoGeradoRoute: AuthenticatedCurriculoGeradoRoute,
   AuthenticatedHistoricoRoute: AuthenticatedHistoricoRoute,
   AuthenticatedNovaVagaRoute: AuthenticatedNovaVagaRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
+const rootRouteChildren: RootRouteChildren = {
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
