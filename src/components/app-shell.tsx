@@ -1,7 +1,17 @@
-import { Link } from "@tanstack/react-router";
-import type { ReactNode } from "react";
-import { FileText, LayoutDashboard, FilePlus2, ScanLine, FileCheck2, History } from "lucide-react";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState, type ReactNode } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import {
+  FileText,
+  LayoutDashboard,
+  FilePlus2,
+  ScanLine,
+  FileCheck2,
+  History,
+  LogOut,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
 
 const nav = [
   { to: "/", label: "Painel", icon: LayoutDashboard },
@@ -23,6 +33,21 @@ export function AppShell({
   acao?: ReactNode;
   children: ReactNode;
 }) {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const [email, setEmail] = useState("");
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => setEmail(data.user?.email ?? ""));
+  }, []);
+
+  async function sair() {
+    await queryClient.cancelQueries();
+    queryClient.clear();
+    await supabase.auth.signOut();
+    navigate({ to: "/auth", replace: true });
+  }
+
   return (
     <div className="flex min-h-screen bg-background">
       <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-sidebar-border bg-sidebar md:flex">
@@ -53,8 +78,14 @@ export function AppShell({
           ))}
         </nav>
         <div className="border-t border-sidebar-border px-5 py-4">
-          <div className="text-sm font-semibold">Ademar Barreto</div>
-          <div className="font-mono text-[11px] text-muted-foreground">sessão de demonstração</div>
+          <div className="truncate font-mono text-[11px] text-muted-foreground">{email}</div>
+          <button
+            type="button"
+            onClick={sair}
+            className="mt-2 inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-sidebar-foreground"
+          >
+            <LogOut className="size-3.5" /> Sair
+          </button>
         </div>
       </aside>
 
@@ -82,6 +113,13 @@ export function AppShell({
               {item.label}
             </Link>
           ))}
+          <button
+            type="button"
+            onClick={sair}
+            className="whitespace-nowrap rounded-md px-3 py-1.5 text-xs font-medium text-muted-foreground"
+          >
+            Sair
+          </button>
         </div>
         <main className="flex-1 px-6 py-8">
           <div className="mx-auto max-w-5xl">{children}</div>
