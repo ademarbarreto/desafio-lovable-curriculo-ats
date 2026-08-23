@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
 import { Route as AuthenticatedAnaliseRouteImport } from './routes/_authenticated/analise'
 import { Route as AuthenticatedCurriculoRouteImport } from './routes/_authenticated/curriculo'
 import { Route as AuthenticatedCurriculoGeradoRouteImport } from './routes/_authenticated/curriculo-gerado'
@@ -25,6 +26,11 @@ const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedAnaliseRoute = AuthenticatedAnaliseRouteImport.update({
   id: '/analise',
@@ -54,7 +60,7 @@ const AuthenticatedNovaVagaRoute = AuthenticatedNovaVagaRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof AuthenticatedRouteRouteWithChildren
+  '/': typeof AuthenticatedIndexRoute
   '/auth': typeof AuthRoute
   '/analise': typeof AuthenticatedAnaliseRoute
   '/curriculo': typeof AuthenticatedCurriculoRoute
@@ -63,13 +69,13 @@ export interface FileRoutesByFullPath {
   '/nova-vaga': typeof AuthenticatedNovaVagaRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/analise': typeof AuthenticatedAnaliseRoute
   '/curriculo': typeof AuthenticatedCurriculoRoute
   '/curriculo-gerado': typeof AuthenticatedCurriculoGeradoRoute
   '/historico': typeof AuthenticatedHistoricoRoute
   '/nova-vaga': typeof AuthenticatedNovaVagaRoute
+  '/': typeof AuthenticatedIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -80,6 +86,7 @@ export interface FileRoutesById {
   '/_authenticated/curriculo-gerado': typeof AuthenticatedCurriculoGeradoRoute
   '/_authenticated/historico': typeof AuthenticatedHistoricoRoute
   '/_authenticated/nova-vaga': typeof AuthenticatedNovaVagaRoute
+  '/_authenticated/': typeof AuthenticatedIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -93,13 +100,13 @@ export interface FileRouteTypes {
     | '/nova-vaga'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/'
     | '/auth'
     | '/analise'
     | '/curriculo'
     | '/curriculo-gerado'
     | '/historico'
     | '/nova-vaga'
+    | '/'
   id:
     | '__root__'
     | '/_authenticated'
@@ -109,6 +116,7 @@ export interface FileRouteTypes {
     | '/_authenticated/curriculo-gerado'
     | '/_authenticated/historico'
     | '/_authenticated/nova-vaga'
+    | '/_authenticated/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -131,6 +139,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/': {
+      id: '/_authenticated/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/analise': {
       id: '/_authenticated/analise'
@@ -176,6 +191,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedCurriculoGeradoRoute: typeof AuthenticatedCurriculoGeradoRoute
   AuthenticatedHistoricoRoute: typeof AuthenticatedHistoricoRoute
   AuthenticatedNovaVagaRoute: typeof AuthenticatedNovaVagaRoute
+  AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -184,6 +200,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedCurriculoGeradoRoute: AuthenticatedCurriculoGeradoRoute,
   AuthenticatedHistoricoRoute: AuthenticatedHistoricoRoute,
   AuthenticatedNovaVagaRoute: AuthenticatedNovaVagaRoute,
+  AuthenticatedIndexRoute: AuthenticatedIndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
