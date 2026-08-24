@@ -95,6 +95,15 @@ function CurriculoGerado() {
   const perfil = curriculo?.perfil;
   const match = candidatura.matches[0];
   const observacoes = match?.observacoes ?? [];
+  const adaptado = (match?.curriculo_adaptado ?? {}) as {
+    titulo?: string;
+    resumo?: string;
+    experiencias?: { cargo: string; empresa: string; periodo: string; bullets: string[] }[];
+    formacao?: string[];
+    certificacoes?: string[];
+    habilidades?: string[];
+  };
+  const temAdaptado = Array.isArray(adaptado.experiencias) && adaptado.experiencias.length > 0;
   const contato = [perfil?.email, perfil?.telefone, perfil?.localizacao].filter(Boolean).join(" · ");
   const links = [perfil?.linkedin_url, perfil?.github_url, perfil?.portfolio_url]
     .filter(Boolean)
@@ -129,12 +138,71 @@ function CurriculoGerado() {
               {perfil?.nome_completo || "Seu nome"}
             </h2>
             <p className="mt-0.5 text-sm font-semibold text-primary">
-              {candidatura.cargo || perfil?.titulo_profissional}
+              {adaptado.titulo || candidatura.cargo || perfil?.titulo_profissional}
             </p>
             {contato ? <p className="mt-2 text-xs text-muted-foreground">{contato}</p> : null}
             {links ? <p className="text-xs text-muted-foreground">{links}</p> : null}
           </header>
 
+          {temAdaptado ? (
+            <>
+              {adaptado.resumo ? (
+                <Secao titulo="Resumo">
+                  <p className="text-sm leading-relaxed">{adaptado.resumo}</p>
+                </Secao>
+              ) : null}
+
+              <Secao titulo="Experiência">
+                {adaptado.experiencias!.map((e) => (
+                  <div key={`${e.empresa}-${e.cargo}-${e.periodo}`}>
+                    <div className="flex flex-wrap items-baseline justify-between gap-2">
+                      <span className="text-sm font-bold">
+                        {e.cargo} — {e.empresa}
+                      </span>
+                      <span className="font-mono text-[11px] text-muted-foreground">
+                        {e.periodo}
+                      </span>
+                    </div>
+                    <ul className="mt-1 space-y-1">
+                      {(e.bullets ?? []).map((b) => (
+                        <li key={b} className="flex gap-2 text-sm leading-relaxed text-foreground/90">
+                          <span className="text-muted-foreground">•</span>
+                          <span>{b}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </Secao>
+
+              {adaptado.formacao?.length ? (
+                <Secao titulo="Formação">
+                  {adaptado.formacao.map((f) => (
+                    <p key={f} className="text-sm">
+                      {f}
+                    </p>
+                  ))}
+                </Secao>
+              ) : null}
+
+              {adaptado.certificacoes?.length ? (
+                <Secao titulo="Certificações">
+                  {adaptado.certificacoes.map((c) => (
+                    <p key={c} className="text-sm">
+                      {c}
+                    </p>
+                  ))}
+                </Secao>
+              ) : null}
+
+              {adaptado.habilidades?.length ? (
+                <Secao titulo="Habilidades">
+                  <p className="text-sm leading-relaxed">{adaptado.habilidades.join(" · ")}</p>
+                </Secao>
+              ) : null}
+            </>
+          ) : (
+            <>
           {perfil?.resumo ? (
             <Secao titulo="Resumo">
               <p className="text-sm leading-relaxed">{perfil.resumo}</p>
@@ -196,6 +264,9 @@ function CurriculoGerado() {
               </p>
             </Secao>
           ) : null}
+
+            </>
+          )}
 
           {!curriculo?.experiencias.length && !curriculo?.habilidades.length ? (
             <p className="mt-8 text-sm text-muted-foreground">
