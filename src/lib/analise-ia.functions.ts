@@ -165,7 +165,7 @@ export const analisarComIA = createServerFn({ method: "POST" })
       pontuacao: number;
       atendidos: { requisito: string; evidencia: string }[];
       lacunas: { requisito: string; situacao: string; explicacao: string }[];
-      curriculo_adaptado: Record<string, unknown>;
+      curriculo_adaptado: unknown;
     };
 
     const pontuacao = Math.max(0, Math.min(100, Math.round(bruto.pontuacao ?? 0)));
@@ -182,9 +182,9 @@ export const analisarComIA = createServerFn({ method: "POST" })
         (l) =>
           `${l.requisito} — ${l.situacao === "atende_parcialmente" ? "atende parcialmente" : "não atendido"}: ${l.explicacao}`,
       ),
-      evidencias: atendidos,
-      lacunas_detalhadas: lacunas,
-      curriculo_adaptado: bruto.curriculo_adaptado ?? {},
+      evidencias: atendidos as never,
+      lacunas_detalhadas: lacunas as never,
+      curriculo_adaptado: (bruto.curriculo_adaptado ?? {}) as never,
       gerado_por_ia: true,
     };
 
