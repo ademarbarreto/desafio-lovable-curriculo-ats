@@ -12,7 +12,8 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { usuarioAtual } from "@/lib/dados";
-import { analisarVaga } from "@/lib/analise";
+import { useServerFn } from "@tanstack/react-start";
+import { analisarComIA } from "@/lib/analise-ia.functions";
 import type { Idioma } from "@/lib/dominio";
 
 export const Route = createFileRoute("/_authenticated/nova-vaga")({
@@ -43,6 +44,8 @@ function NovaVaga() {
   const [idioma, setIdioma] = useState<Idioma>("pt");
   const [salvando, setSalvando] = useState(false);
 
+  const executarAnalise = useServerFn(analisarComIA);
+
   async function enviar(e: React.FormEvent) {
     e.preventDefault();
     if (texto.trim().length < 20) {
@@ -53,9 +56,6 @@ function NovaVaga() {
     try {
       const user = await usuarioAtual();
 
-      const { data: habilidades, error: erroHab } = await supabase.from("skills").select("nome");
-      if (erroHab) throw new Error(erroHab.message);
-
       const { data: vaga, error: erroVaga } = await supabase
         .from("job_postings")
         .insert({ user_id: user.id, empresa, cargo, descricao: texto, idioma })
@@ -63,13 +63,7 @@ function NovaVaga() {
         .single();
       if (erroVaga) throw new Error(erroVaga.message);
 
-      const resultado = analisarVaga(texto, habilidades ?? [], idioma);
-      const { error: erroMatch } = await supabase.from("matches").insert({
-        user_id: user.id,
-        job_posting_id: vaga.id,
-        ...resultado,
-      });
-      if (erroMatch) throw new Error(erroMatch.message);
+      await executarAnalise({ data: { job_posting_id: vaga.id } });
 
       await queryClient.invalidateQueries();
       navigate({ to: "/analise", search: { id: vaga.id } });
