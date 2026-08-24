@@ -1,5 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { useState } from "react";
+import { toast } from "sonner";
+import { analisarComIA } from "@/lib/analise-ia.functions";
 import { AppShell } from "@/components/app-shell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,7 +11,7 @@ import { Progress } from "@/components/ui/progress";
 import { Pontuacao, TechTag } from "@/components/tech-tag";
 import { EstadoVazio } from "@/components/estado-vazio";
 import { carregarCandidatura } from "@/lib/dados";
-import { FileCheck2, FilePlus2 } from "lucide-react";
+import { FileCheck2, FilePlus2, Sparkles } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/analise")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -39,6 +43,30 @@ function Analise() {
   });
 
   const match = candidatura?.matches[0];
+  const queryClient = useQueryClient();
+  const executarAnalise = useServerFn(analisarComIA);
+  const [reanalisando, setReanalisando] = useState(false);
+
+  const evidencias = (match?.evidencias ?? []) as { requisito: string; evidencia: string }[];
+  const lacunasDetalhadas = (match?.lacunas_detalhadas ?? []) as {
+    requisito: string;
+    situacao: string;
+    explicacao: string;
+  }[];
+
+  async function reanalisar() {
+    if (!candidatura) return;
+    setReanalisando(true);
+    try {
+      await executarAnalise({ data: { job_posting_id: candidatura.id } });
+      await queryClient.invalidateQueries();
+      toast.success("Análise refeita pela IA.");
+    } catch (erro) {
+      toast.error(erro instanceof Error ? erro.message : "Não foi possível reanalisar.");
+    } finally {
+      setReanalisando(false);
+    }
+  }
 
   return (
     <AppShell
@@ -50,11 +78,16 @@ function Analise() {
       }
       acao={
         candidatura ? (
+          <div className="flex gap-2">
+          <Button variant="outline" onClick={reanalisar} disabled={reanalisando}>
+            <Sparkles /> {reanalisando ? "Analisando…" : "Reanalisar com IA"}
+          </Button>
           <Button asChild>
             <Link to="/curriculo-gerado" search={{ id: candidatura.id }}>
               <FileCheck2 /> Ver currículo gerado
             </Link>
           </Button>
+          </div>
         ) : undefined
       }
     >
@@ -140,6 +173,47 @@ function Analise() {
               </CardContent>
             </Card>
           </div>
+
+          {evidencias.length > 0 ? (
+            <Card className="mt-6 border-border">
+              <CardHeader className="border-b border-border">
+                <CardTitle className="text-base">Evidências no currículo-base</CardTitle>
+              </CardHeader>
+              <CardContent className="p-5">
+                <ul className="space-y-3">
+                  {evidencias.map((e) => (
+                    <li key={e.requisito} className="grid gap-1 sm:grid-cols-[220px_1fr] sm:gap-4">
+                      <span className="font-mono text-xs text-success">+ {e.requisito}</span>
+                      <span className="text-sm text-foreground/90">{e.evidencia}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          ) : null}
+
+          {lacunasDetalhadas.length > 0 ? (
+            <Card className="mt-6 border-warning/30 bg-warning-soft">
+              <CardHeader className="border-b border-warning/20">
+                <CardTitle className="text-base">Por que cada lacuna existe</CardTitle>
+              </CardHeader>
+              <CardContent className="p-5">
+                <ul className="space-y-3">
+                  {lacunasDetalhadas.map((l) => (
+                    <li key={l.requisito} className="grid gap-1 sm:grid-cols-[220px_1fr] sm:gap-4">
+                      <span className="font-mono text-xs text-warning">
+                        ~ {l.requisito}
+                        <span className="ml-1 opacity-70">
+                          {l.situacao === "atende_parcialmente" ? "(parcial)" : "(não atende)"}
+                        </span>
+                      </span>
+                      <span className="text-sm text-foreground/90">{l.explicacao}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          ) : null}
 
           <Card className="mt-6 border-border">
             <CardContent className="p-5 text-sm text-muted-foreground">
