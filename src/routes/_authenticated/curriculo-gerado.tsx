@@ -10,7 +10,7 @@ import { carregarCandidatura, carregarCurriculo } from "@/lib/dados";
 
 export const Route = createFileRoute("/_authenticated/curriculo-gerado")({
   validateSearch: (search: Record<string, unknown>) => ({
-    id: typeof search.id === "string" ? search.id : undefined,
+    id: typeof search["id"] === "string" ? (search["id"] as string) : undefined,
   }),
   head: () => ({
     meta: [
