@@ -164,9 +164,13 @@ export type Database = {
       matches: {
         Row: {
           created_at: string
+          curriculo_adaptado: Json
+          evidencias: Json
+          gerado_por_ia: boolean
           habilidades_compativeis: string[]
           id: string
           job_posting_id: string
+          lacunas_detalhadas: Json
           lacunas_reais: string[]
           observacoes: string[]
           pontuacao: number
@@ -175,9 +179,13 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          curriculo_adaptado?: Json
+          evidencias?: Json
+          gerado_por_ia?: boolean
           habilidades_compativeis?: string[]
           id?: string
           job_posting_id: string
+          lacunas_detalhadas?: Json
           lacunas_reais?: string[]
           observacoes?: string[]
           pontuacao?: number
@@ -186,9 +194,13 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          curriculo_adaptado?: Json
+          evidencias?: Json
+          gerado_por_ia?: boolean
           habilidades_compativeis?: string[]
           id?: string
           job_posting_id?: string
+          lacunas_detalhadas?: Json
           lacunas_reais?: string[]
           observacoes?: string[]
           pontuacao?: number
