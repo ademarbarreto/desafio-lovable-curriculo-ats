@@ -5,8 +5,16 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Download, FileText, FilePlus2 } from "lucide-react";
+import { toast } from "sonner";
 import { EstadoVazio } from "@/components/estado-vazio";
 import { carregarCandidatura, carregarCurriculo } from "@/lib/dados";
+import {
+  exportarDocx,
+  exportarPdf,
+  nomeArquivoAts,
+  normalizarPeriodo,
+  type CurriculoAts,
+} from "@/lib/exportar-curriculo";
 
 export const Route = createFileRoute("/_authenticated/curriculo-gerado")({
   validateSearch: (search: Record<string, unknown>) => ({
