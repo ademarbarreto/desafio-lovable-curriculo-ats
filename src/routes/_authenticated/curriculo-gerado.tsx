@@ -5,8 +5,16 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Download, FileText, FilePlus2 } from "lucide-react";
+import { toast } from "sonner";
 import { EstadoVazio } from "@/components/estado-vazio";
 import { carregarCandidatura, carregarCurriculo } from "@/lib/dados";
+import {
+  exportarDocx,
+  exportarPdf,
+  nomeArquivoAts,
+  normalizarPeriodo,
+  type CurriculoAts,
+} from "@/lib/exportar-curriculo";
 
 export const Route = createFileRoute("/_authenticated/curriculo-gerado")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -41,16 +49,13 @@ function Secao({ titulo, children }: { titulo: string; children: React.ReactNode
   );
 }
 
-function nomeArquivo(nome: string, empresa: string) {
-  const limpo = (v: string) =>
-    v
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/[^a-zA-Z0-9]+/g, "-")
-      .replace(/^-|-$/g, "")
-      .toLowerCase();
-  return `curriculo-${limpo(nome) || "sem-nome"}-${limpo(empresa) || "vaga"}.pdf`;
+function bulletsDe(descricao: string): string[] {
+  return (descricao ?? "")
+    .split(/\r?\n|(?<=\.)\s+(?=[A-ZÁÉÍÓÚÂÊÔÃÕÇ])|;/)
+    .map((b) => b.replace(/^[-•*\u2022\s]+/, "").trim())
+    .filter(Boolean);
 }
+
 
 function CurriculoGerado() {
   const { id } = Route.useSearch();
@@ -109,27 +114,89 @@ function CurriculoGerado() {
     .filter(Boolean)
     .join(" · ");
 
+  const nomeArquivo = nomeArquivoAts(
+    perfil?.nome_completo ?? "",
+    candidatura.cargo,
+    candidatura.empresa,
+  );
+
+  const montarCvAts = (): CurriculoAts => ({
+    nome: perfil?.nome_completo || "Sem nome",
+    titulo: adaptado.titulo || candidatura.cargo || perfil?.titulo_profissional || "",
+    contato: [contato, links].filter(Boolean),
+    resumo: temAdaptado ? (adaptado.resumo ?? "") : (perfil?.resumo ?? ""),
+    experiencias: temAdaptado
+      ? adaptado.experiencias!.map((e) => ({
+          cargo: e.cargo,
+          empresa: e.empresa,
+          periodo: normalizarPeriodo(e.periodo),
+          bullets: e.bullets ?? [],
+        }))
+      : (curriculo?.experiencias ?? []).map((e) => ({
+          cargo: e.cargo,
+          empresa: e.empresa,
+          periodo: normalizarPeriodo(e.data_inicio, e.data_fim),
+          bullets: bulletsDe(e.descricao),
+        })),
+    formacao: temAdaptado
+      ? (adaptado.formacao ?? [])
+      : (curriculo?.formacoes ?? []).map(
+          (f) => `${f.curso} — ${f.instituicao} (${normalizarPeriodo(f.data_inicio, f.data_fim)})`,
+        ),
+    certificacoes: temAdaptado
+      ? (adaptado.certificacoes ?? [])
+      : (curriculo?.certificacoes ?? []).map(
+          (c) =>
+            `${c.nome} — ${c.emissor}${c.data_emissao ? ` (${normalizarPeriodo(c.data_emissao, c.data_validade)})` : ""}`,
+        ),
+    habilidades: temAdaptado
+      ? (adaptado.habilidades ?? [])
+      : (curriculo?.habilidades ?? []).map((h) => h.nome),
+  });
+
+  const baixarDocx = async () => {
+    try {
+      await exportarDocx(montarCvAts(), nomeArquivo);
+      toast.success(`${nomeArquivo}.docx exportado`);
+    } catch {
+      toast.error("Não foi possível gerar o DOCX.");
+    }
+  };
+
+  const baixarPdf = () => {
+    try {
+      exportarPdf(montarCvAts(), nomeArquivo);
+      toast.success(`${nomeArquivo}.pdf exportado`);
+    } catch {
+      toast.error("Não foi possível gerar o PDF.");
+    }
+  };
+
   return (
     <AppShell
       titulo="Currículo Gerado"
       descricao={`Adaptado para ${candidatura.cargo || "vaga sem cargo"} · ${candidatura.empresa || "empresa não informada"}`}
       acao={
         <div className="flex gap-2">
-          <Button variant="outline" disabled>
+          <Button variant="outline" onClick={baixarDocx}>
             <FileText /> Exportar DOCX
           </Button>
-          <Button disabled>
+          <Button onClick={baixarPdf}>
             <Download /> Exportar PDF
           </Button>
         </div>
       }
     >
-      <div className="mb-4 flex items-center gap-2 font-mono text-xs text-muted-foreground">
+      <div className="mb-4 flex flex-wrap items-center gap-2 font-mono text-xs text-muted-foreground">
         <span className="label-tech">arquivo</span>
         <span className="rounded-sm border border-border bg-card px-2 py-1">
-          {nomeArquivo(perfil?.nome_completo ?? "", candidatura.empresa)}
+          {nomeArquivo}.docx
+        </span>
+        <span className="opacity-70">
+          coluna única · Arial · datas MM/AAAA · sem tabelas, ícones ou gráficos
         </span>
       </div>
+
 
       <Card className="border-border">
         <CardContent className="mx-auto max-w-2xl px-8 py-10">
