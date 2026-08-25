@@ -41,16 +41,13 @@ function Secao({ titulo, children }: { titulo: string; children: React.ReactNode
   );
 }
 
-function nomeArquivo(nome: string, empresa: string) {
-  const limpo = (v: string) =>
-    v
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/[^a-zA-Z0-9]+/g, "-")
-      .replace(/^-|-$/g, "")
-      .toLowerCase();
-  return `curriculo-${limpo(nome) || "sem-nome"}-${limpo(empresa) || "vaga"}.pdf`;
+function bulletsDe(descricao: string): string[] {
+  return (descricao ?? "")
+    .split(/\r?\n|(?<=\.)\s+(?=[A-ZÁÉÍÓÚÂÊÔÃÕÇ])|;/)
+    .map((b) => b.replace(/^[-•*\u2022\s]+/, "").trim())
+    .filter(Boolean);
 }
+
 
 function CurriculoGerado() {
   const { id } = Route.useSearch();
