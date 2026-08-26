@@ -1,7 +1,6 @@
 import {
   AlignmentType,
   Document,
-  HeadingLevel,
   LevelFormat,
   Packer,
   Paragraph,
@@ -116,7 +115,6 @@ export async function exportarDocx(cv: CurriculoAts, arquivo: string) {
 
   const secao = (titulo: string) =>
     new Paragraph({
-      heading: HeadingLevel.HEADING_1,
       spacing: { before: 240, after: 100 },
       children: [new TextRun({ text: titulo.toUpperCase(), bold: true, size: 24, font: "Arial" })],
     });
