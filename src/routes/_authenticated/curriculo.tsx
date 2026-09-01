@@ -175,9 +175,9 @@ function MeuCurriculo() {
 
       const inserir = async (tabela: string, linhas: Record<string, unknown>[]) => {
         const novos = linhas
-          .filter((l) => !l.id)
+          .filter((l) => !l['id'])
           .map(({ id: _id, ...resto }) => resto);
-        const existentes = linhas.filter((l) => l.id);
+        const existentes = linhas.filter((l) => l['id']);
 
         if (novos.length) {
           const { error } = await supabase.from(tabela as "experiences").insert(novos as never);
