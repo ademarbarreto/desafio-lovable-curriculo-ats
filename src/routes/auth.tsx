@@ -184,7 +184,18 @@ function Autenticacao() {
               <Button type="submit" className="w-full" disabled={carregando}>
                 <ScanLine /> {modo === "entrar" ? "Entrar" : "Criar conta"}
               </Button>
+              {modo === "entrar" ? (
+                <button
+                  type="button"
+                  onClick={recuperarSenha}
+                  disabled={carregando}
+                  className="w-full font-mono text-[11px] uppercase tracking-wider text-muted-foreground underline-offset-4 hover:text-primary hover:underline"
+                >
+                  Esqueci minha senha
+                </button>
+              ) : null}
             </form>
+
           </CardContent>
         </Card>
       </div>
