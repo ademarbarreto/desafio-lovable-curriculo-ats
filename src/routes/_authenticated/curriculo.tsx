@@ -174,29 +174,40 @@ function MeuCurriculo() {
       await removidos("skills", habilidades.filter((h) => h.id).map((h) => h.id!));
 
       const inserir = async (tabela: string, linhas: Record<string, unknown>[]) => {
-        if (!linhas.length) return;
-        const { error } = await supabase.from(tabela as "experiences").upsert(linhas as never);
-        if (error) throw new Error(error.message);
+        const novos = linhas
+          .filter((l) => !l.id)
+          .map(({ id: _id, ...resto }) => resto);
+        const existentes = linhas.filter((l) => l.id);
+
+        if (novos.length) {
+          const { error } = await supabase.from(tabela as "experiences").insert(novos as never);
+          if (error) throw new Error(error.message);
+        }
+        if (existentes.length) {
+          const { error } = await supabase.from(tabela as "experiences").upsert(existentes as never);
+          if (error) throw new Error(error.message);
+        }
       };
 
       await inserir(
         "experiences",
-        experiencias.map((e, i) => ({ ...e, id: e.id ?? undefined, user_id: uid, ordem: i })),
+        experiencias.map((e, i) => ({ ...e, user_id: uid, ordem: i })),
       );
       await inserir(
         "education",
-        formacoes.map((f, i) => ({ ...f, id: f.id ?? undefined, user_id: uid, ordem: i })),
+        formacoes.map((f, i) => ({ ...f, user_id: uid, ordem: i })),
       );
       await inserir(
         "certifications",
-        certificacoes.map((c, i) => ({ ...c, id: c.id ?? undefined, user_id: uid, ordem: i })),
+        certificacoes.map((c, i) => ({ ...c, user_id: uid, ordem: i })),
       );
       await inserir(
         "skills",
         habilidades
           .filter((h) => h.nome.trim())
-          .map((h, i) => ({ ...h, id: h.id ?? undefined, user_id: uid, ordem: i })),
+          .map((h, i) => ({ ...h, user_id: uid, ordem: i })),
       );
+
 
       await queryClient.invalidateQueries();
       toast.success("Currículo-base salvo.");
