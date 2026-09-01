@@ -41,6 +41,38 @@ function Autenticacao() {
     });
   }, [navigate]);
 
+  function mensagemErro(erro: unknown) {
+    const bruto = erro instanceof Error ? erro.message : "";
+    if (/invalid login credentials/i.test(bruto))
+      return "E-mail ou senha incorretos. Se ainda não tem conta, use “Criar conta”.";
+    if (/email not confirmed/i.test(bruto))
+      return "Confirme o e-mail pelo link enviado antes de entrar.";
+    if (/user already registered/i.test(bruto))
+      return "Já existe uma conta com este e-mail. Use “Entrar” ou redefina a senha.";
+    if (/password/i.test(bruto) && /least|curta|short/i.test(bruto))
+      return "A senha precisa ter pelo menos 6 caracteres.";
+    return bruto || "Não foi possível continuar.";
+  }
+
+  async function recuperarSenha() {
+    if (!email) {
+      toast.error("Informe o e-mail para receber o link de redefinição.");
+      return;
+    }
+    setCarregando(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/redefinir-senha`,
+      });
+      if (error) throw error;
+      toast.success("Enviamos um link de redefinição para o seu e-mail.");
+    } catch (erro) {
+      toast.error(mensagemErro(erro));
+    } finally {
+      setCarregando(false);
+    }
+  }
+
   async function enviar(e: React.FormEvent) {
     e.preventDefault();
     setCarregando(true);
@@ -68,11 +100,12 @@ function Autenticacao() {
         }
       }
     } catch (erro) {
-      toast.error(erro instanceof Error ? erro.message : "Não foi possível continuar.");
+      toast.error(mensagemErro(erro));
     } finally {
       setCarregando(false);
     }
   }
+
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-background px-4 py-12">
@@ -151,7 +184,18 @@ function Autenticacao() {
               <Button type="submit" className="w-full" disabled={carregando}>
                 <ScanLine /> {modo === "entrar" ? "Entrar" : "Criar conta"}
               </Button>
+              {modo === "entrar" ? (
+                <button
+                  type="button"
+                  onClick={recuperarSenha}
+                  disabled={carregando}
+                  className="w-full font-mono text-[11px] uppercase tracking-wider text-muted-foreground underline-offset-4 hover:text-primary hover:underline"
+                >
+                  Esqueci minha senha
+                </button>
+              ) : null}
             </form>
+
           </CardContent>
         </Card>
       </div>
