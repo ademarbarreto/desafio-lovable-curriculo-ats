@@ -175,3 +175,93 @@ cd <pasta-do-projeto>
 npm i
 npm run dev
 ```
+
+---
+
+## Apêndice — Kit de Prompts para o Lovable
+
+Documento usado para construir o Currículo Certeiro no Lovable: 4 prompts para colar **um de cada vez, nessa ordem**. A documentação oficial do Lovable é consistente nesse ponto: um prompt único gigante tentando construir tudo de uma vez costuma sair pior — o modelo se perde em detalhes secundários e você acaba corrigindo mais do que teria escrito num prompt enxuto. Um prompt de fundação bem definido, seguido de prompts focados para cada capacidade nova (banco de dados, IA, exportação), constrói mais rápido e com menos retrabalho de créditos.
+
+> Copie só o texto de dentro de cada bloco cinza abaixo (sem os três acentos graves) e cole no chat do Lovable.
+
+### Prompt 1 — Fundação do app
+
+*Cole primeiro. Revise o preview antes de seguir para o Prompt 2.*
+
+```
+Crie um aplicativo web chamado "Currículo Certeiro" — um gerador de currículos otimizados para ATS (Applicant Tracking System) que compara o currículo do usuário com uma vaga específica e gera uma versão adaptada para aquela vaga, mostrando com honestidade o que combina e o que falta. Público: profissionais que aplicam para várias vagas ao mesmo tempo e querem um currículo relevante para cada uma, sem inventar experiência que não têm. Ação principal: colar o texto de uma vaga e receber uma análise de compatibilidade mais um currículo adaptado, pronto para exportar.
+
+Modelo de dados:
+- profiles: nome_completo, titulo_profissional, email, telefone, localizacao, linkedin_url, github_url, portfolio_url, resumo (texto longo)
+- experiences: empresa, cargo, data_inicio, data_fim (vazio se for o emprego atual), descricao (texto longo)
+- education: instituicao, curso, data_inicio, data_fim
+- certifications: nome, emissor, data_emissao, data_validade
+- skills: nome, categoria (técnica | ferramenta | soft skill)
+- job_postings: empresa_vaga, cargo_vaga, descricao_vaga (texto longo colado pelo usuário), idioma (pt | en)
+- matches: referência à vaga, pontuacao (0 a 100), habilidades_compativeis (lista), lacunas_reais (lista), curriculo_adaptado (texto), status (rascunho | aplicado | entrevista | rejeitado | aceito)
+
+Páginas, no menu lateral:
+1. Painel — candidaturas recentes com pontuação e status; atalho para "Nova Vaga"
+2. Meu Currículo — formulário com dados pessoais, experiências, formação, certificações e habilidades. É a única fonte de verdade: nada aqui é preenchido pela IA
+3. Nova Vaga — campo grande para colar a descrição da vaga, mais empresa e cargo; botão "Analisar Compatibilidade"
+4. Análise de Compatibilidade — pontuação, tags de habilidades compatíveis e tags de lacunas reais lado a lado, em estilo de diff de código (não um gauge circular genérico): tags monoespaçadas, verde-sálvia com "+" para o que combina, âmbar com "~" para o que falta. Nesta primeira versão use dados de exemplo fixos para validar o layout — a análise real por IA entra num próximo prompt
+5. Currículo Gerado — preview do currículo adaptado em coluna única, com uma seção "Observações" listando as lacunas com honestidade. Botões de exportar visíveis, ainda sem função
+6. Histórico — tabela de todas as vagas analisadas, com status editável
+
+Estilo visual: preciso, editorial-técnico, confiável — o oposto do SaaS genérico roxo-gradiente. Pense em "ficha técnica encontra scanner de código". Use shadcn/ui para todos os componentes.
+
+Cores (tokens do tema, modo claro): fundo #F7F8FA, texto #1C2A3A, primária #0E7C86 (teal profundo, para ações e nav ativo), sucesso/compatível #4F7942 (verde-sálvia), atenção/lacuna #B8792A (âmbar), crítico #9C3F2E (vermelho-tijolo escuro), bordas e fundos secundários #E2E6EA.
+
+Tipografia: Manrope em toda a interface; IBM Plex Mono só na pontuação de match, nas tags de habilidades e no nome do arquivo exportado — reforça a diferença entre o "dado processado" e o texto humano do currículo.
+
+Uma única animação: ao carregar o resultado da análise, as tags de compatibilidade e lacunas aparecem em sequência curta, como uma varredura. Nenhuma outra animação decorativa.
+
+Interface em português do Brasil. Responsivo, mas priorize desktop — o uso principal é preencher formulários longos. Estruture as telas já assumindo um usuário autenticado; a autenticação real entra no próximo prompt.
+
+Regra inegociável do produto: o currículo gerado nunca pode conter habilidade, ferramenta, certificação ou tempo de experiência que não esteja no currículo-base do usuário. O que falta vira lacuna visível, nunca é inventado ou escondido.
+
+Não implemente ainda: login e banco de dados reais, chamada de IA real, exportação real de arquivo, múltiplos usuários, pagamento.
+```
+
+### Prompt 2 — Backend e autenticação
+
+*Cole depois que o Prompt 1 estiver de pé e você tiver ativado o backend (Cloud) do projeto no Lovable.*
+
+```
+Ative o backend nativo (Cloud/Supabase) deste projeto. Adicione autenticação por e-mail e senha. Crie as tabelas do modelo de dados já definido — profiles, experiences, education, certifications, skills, job_postings, matches — todas vinculadas ao usuário autenticado, com políticas RLS garantindo que cada pessoa veja só os próprios dados. Troque os dados de exemplo das telas por dados reais do banco. Em cada lista vazia, mostre um estado vazio convidativo (ex.: "Nenhuma vaga analisada ainda — adicione a primeira") em vez de uma tela em branco.
+```
+
+### Prompt 3 — Lógica de IA (match + geração ATS)
+
+*O coração do produto. Cole depois que login e banco estiverem funcionando.*
+
+```
+Adicione a lógica real de IA à tela de Análise de Compatibilidade, usando uma Edge Function que chama uma API de LLM (ex.: OpenAI, ou os recursos de IA nativos do Lovable). Ao clicar em "Analisar Compatibilidade", a função recebe o currículo-base estruturado do usuário e o texto da vaga, e devolve em JSON: pontuação de 0 a 100, lista de habilidades/requisitos atendidos com a evidência correspondente no currículo, lista de lacunas reais (requisitos da vaga que o candidato não atende ou atende parcialmente) e uma versão adaptada do currículo em formato ATS de coluna única.
+
+Regra inegociável para o prompt da IA: nunca adicionar habilidade, ferramenta, certificação ou tempo de experiência que não exista no currículo-base. A IA pode reordenar, reescrever para clareza e incorporar naturalmente as palavras-chave da vaga — nunca inventar. Requisito não atendido vai para a lista de lacunas, nunca é omitido.
+
+Salve o resultado na tabela matches e exiba as tags de compatibilidade e lacunas no estilo de diff já definido na primeira versão.
+```
+
+### Prompt 4 — Exportação em DOCX/PDF
+
+*Cole por último.*
+
+```
+Adicione exportação do currículo gerado em .docx e .pdf, seguindo regras de compatibilidade com ATS: layout de coluna única; sem tabelas, caixas de texto, ícones ou elementos gráficos; fonte padrão (Arial, Calibri ou Times New Roman); títulos de seção em texto simples com nomenclatura convencional (Experiência Profissional, Formação Acadêmica, Habilidades, Certificações); datas em formato MM/AAAA; marcadores simples, sem símbolos decorativos. Nome sugerido do arquivo: Nome_Sobrenome_Cargo_Empresa.docx. O botão de exportar fica na tela Currículo Gerado, já posicionado no Prompt 1.
+```
+
+### Dicas rápidas para o Lovable
+
+- Cole um prompt de cada vez e confira o preview antes de seguir para o próximo.
+- Ajuste visual pequeno (cor de um botão, espaçamento, texto de um rótulo) → use o **Visual Edits**, não consome créditos.
+- Decisão maior (nova tabela, mudar a abordagem de alguma tela) → discuta primeiro no **Chat/Plan Mode** antes de gerar código.
+- Antes de publicar, rode o **Security Scan** nativo do Lovable — importante porque o app vai guardar currículos e dados pessoais reais.
+- Se um prompt sair muito torto, restaure a versão anterior no histórico em vez de tentar consertar por cima.
+
+### Ideias para depois (fora do escopo inicial)
+
+- Carta de apresentação gerada junto com o currículo, alinhada à vaga
+- Importar o perfil a partir de um PDF de currículo existente
+- Currículo em inglês quando a vaga estiver em inglês — tradução fiel do conteúdo real, não geração nova
+- Painel com taxa de retorno por tipo de vaga ou empresa
