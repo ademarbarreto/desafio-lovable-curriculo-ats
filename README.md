@@ -1,8 +1,20 @@
 # Currículo Certeiro
 
+<p align="center">
+  <img src="docs/banner.png" alt="Currículo Certeiro — gerador de currículos otimizados para ATS" width="100%" />
+</p>
+
 Gerador de currículos otimizados para ATS. O app compara o seu currículo-base com o texto de uma vaga específica, mostra honestamente o que combina e o que falta, e gera uma versão adaptada pronta para exportar em `.docx` e `.pdf`.
 
 > **Regra inegociável:** a IA nunca inventa habilidade, ferramenta, certificação ou tempo de experiência que não esteja no currículo-base. Ela pode reordenar, reescrever para clareza e incorporar palavras-chave da vaga — nada além disso. Requisito não atendido vira lacuna, nunca é omitido.
+
+---
+
+## Acesso à aplicação
+
+O app está no ar e pronto para uso — crie sua conta ou entre com seu e-mail:
+
+[**Entrar — Currículo Certeiro**](https://curriculo-certeiro.lovable.app)
 
 ---
 
